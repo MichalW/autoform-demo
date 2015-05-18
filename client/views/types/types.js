@@ -1,11 +1,15 @@
 var selectedType = new ReactiveVar("text");
 var selectedSchemaType = new ReactiveVar(String);
 var selectedSchemaTypeAsString = new ReactiveVar("String");
+var selectedSchemaTypeMultiple = new ReactiveVar(false);
 
 Template.types.helpers({
   typesSchema1: function () {
     var st = selectedType.get();
     var sst = selectedSchemaType.get();
+    var smt = selectedSchemaTypeMultiple.get();
+    var afi = smt?{multiple: true}:{};
+
     return new SimpleSchema({
       typeTest: {
         type: sst,
@@ -18,7 +22,8 @@ Template.types.helpers({
               {label: "2014", value: 2014},
               {label: "2015", value: 2015}
             ];
-          }
+          },
+          afFieldInput: afi
         }
       }
     });
@@ -37,6 +42,9 @@ Template.types.helpers({
   },
   selectedSchemaType: function () {
     return selectedSchemaTypeAsString.get();
+  },
+  selectedSchemaTypeMultiple: function () {
+    return selectedSchemaTypeMultiple.get();
   },
   extraInfo: function () {
     var t = selectedType.get();
@@ -73,6 +81,7 @@ Template.types.events({
   'change .schema-type-selection': function (event) {
     var t = event.target.value;
     selectedSchemaTypeAsString.set(t);
+    selectedSchemaTypeMultiple.set(false);
 
     switch (t) {
       case "String":
@@ -89,15 +98,19 @@ Template.types.events({
         break;
       case "[String]":
         selectedSchemaType.set([String]);
+        selectedSchemaTypeMultiple.set(true);
         break;
       case "[Number]":
         selectedSchemaType.set([Number]);
+        selectedSchemaTypeMultiple.set(true);
         break;
       case "[Boolean]":
         selectedSchemaType.set([Boolean]);
+        selectedSchemaTypeMultiple.set(true);
         break;
       case "[Date]":
         selectedSchemaType.set([Date]);
+        selectedSchemaTypeMultiple.set(true);
         break;
     }
   }
